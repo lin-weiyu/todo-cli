@@ -1,5 +1,9 @@
-#include <iostream>
+#include "TodoManager.h"
+
 int main(){
-    std::cout << "Todo CLI" << std::endl;
+    TodoManager manager;
+    manager.addTodo("learn git");
+    manager.addTodo("learn cmake");
+    manager.listTodos();
     return 0;
 }

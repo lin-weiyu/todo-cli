@@ -4,4 +4,6 @@ set(CMAKE_CXX_STANDARD 17)
 include_directories(include)
 add_executable(todo
     src/main.cpp
+    src/Todo.cpp
+    src/TodoManager.cpp
 )
