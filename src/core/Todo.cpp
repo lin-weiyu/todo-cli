@@ -1,4 +1,4 @@
-#include "Todo.h"
+#include "core/Todo.h"
 
 Todo::Todo(int id, const std::string& text){
     this->id = id;

@@ -2,8 +2,8 @@
 
 #include <vector>
 
-#include "Storage.h"
-#include "Todo.h"
+#include "storage/Storage.h"
+#include "core/Todo.h"
 
 class TodoManager{
 private:

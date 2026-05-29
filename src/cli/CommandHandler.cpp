@@ -1,9 +1,9 @@
-#include "CommandHandler.h"
+#include "cli/CommandHandler.h"
 
 #include <iostream>
 #include <string>
 
-#include "TodoManager.h"
+#include "core/TodoManager.h"
 
 void CommandHandler::handle(int argc, char* argv[]){
     TodoManager manager;

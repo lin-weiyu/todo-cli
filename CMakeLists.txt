@@ -6,9 +6,9 @@ include_directories(include)
 find_package(nlohmann_json REQUIRED)
 add_executable(todo
     src/main.cpp
-    src/Todo.cpp
-    src/TodoManager.cpp
-    src/Storage.cpp
-    src/CommandHandler.cpp
+    src/core/Todo.cpp
+    src/core/TodoManager.cpp
+    src/storage/Storage.cpp
+    src/cli/CommandHandler.cpp
 )
 target_link_libraries(todo PRIVATE nlohmann_json::nlohmann_json)
