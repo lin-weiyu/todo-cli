@@ -1,4 +1,4 @@
-#include "CommandHandler.h"
+#include "cli/CommandHandler.h"
 
 int main(int argc, char* argv[]){
     CommandHandler handler;
