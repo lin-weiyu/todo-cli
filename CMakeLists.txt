@@ -7,4 +7,5 @@ add_executable(todo
     src/Todo.cpp
     src/TodoManager.cpp
     src/Storage.cpp
+    src/CommandHandler.cpp
 )
