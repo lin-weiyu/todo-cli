@@ -28,5 +28,20 @@
         "done": false,
         "id": 6,
         "text": "leanr logger"
+    },
+    {
+        "done": false,
+        "id": 7,
+        "text": "learn assert"
+    },
+    {
+        "done": false,
+        "id": 8,
+        "text": "learn"
+    },
+    {
+        "done": false,
+        "id": 9,
+        "text": "learn pattern"
     }
 ]
