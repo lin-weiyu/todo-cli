@@ -10,7 +10,7 @@ void CommandHandler::handle(int argc, char* argv[]){
 
     if (argc < 2){
         // std::cout << "Usage: ./toda <command>" << std::endl;
-        Logger::error("Usage: ./toda <command>");
+        Logger::error("Usage: ./todo <command>");
         return;
     }
     
