@@ -6,4 +6,5 @@ add_executable(todo
     src/main.cpp
     src/Todo.cpp
     src/TodoManager.cpp
+    src/Storage.cpp
 )
