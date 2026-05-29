@@ -3,33 +3,46 @@
 #include <fstream>
 #include <iostream>
 #include <sstream>
+#include <nlohmann/json.hpp>
+
+using json = nlohmann::json;
 
 void Storage::save(const std::vector<Todo>& todos){
-    std::ofstream file("../data/tasks.txt");
+    json j = json::array();
 
     for (const auto& todo : todos){
-        file << todo.id << "|" << todo.text << "|"<< todo.done << "\n";
+        j.push_back({
+            {"id", todo.id},
+            {"text", todo.text},
+            {"done", todo.done}
+        });
     }
+
+    std::ofstream file("../data/tasks.json");
+
+    file << j.dump(4);
 }
 
 std::vector<Todo> Storage::load(){
     std::vector<Todo> todos;
-    std::ifstream file("../data/tasks.txt");
-    std::string line;
 
-    while (std::getline(file, line)){
-        std::stringstream ss(line);
-        std::string idStr;
-        std::string text;
-        std::string doneStr;
+    std::ifstream file("../data/tasks.json");
 
-        std::getline(ss, idStr, '|');
-        std::getline(ss, text, '|');
-        std::getline(ss, doneStr);
+    if (!file){
+        return todos;
+    }
 
-        Todo todo(std::stoi(idStr), text);
+    json j;
 
-        todo.done = (doneStr == "1");
+    file >> j;
+
+    for (const auto& item : j){
+        Todo todo(
+            item["id"],
+            item["text"]
+        );
+
+        todo.done = item["done"];
 
         todos.push_back(todo);
     }
