@@ -1,5 +1,5 @@
 #include "cli/CommandHandler.h"
-
+#include "utils/Logger.h"
 #include <iostream>
 #include <string>
 
@@ -9,7 +9,8 @@ void CommandHandler::handle(int argc, char* argv[]){
     TodoManager manager;
 
     if (argc < 2){
-        std::cout << "Usage: ./toda <command>" << std::endl;
+        // std::cout << "Usage: ./toda <command>" << std::endl;
+        Logger::error("Usage: ./toda <command>");
         return;
     }
     
@@ -17,7 +18,8 @@ void CommandHandler::handle(int argc, char* argv[]){
 
     if (command == "add"){
         if (argc < 3){
-            std::cout << "Please provide a task." << std::endl;
+            // std::cout << "Please provide a task." << std::endl;
+            Logger::error("Please povide a task.");
             return;
         }
 
@@ -25,14 +27,16 @@ void CommandHandler::handle(int argc, char* argv[]){
 
         manager.addTodo(task);
 
-        std::cout << "Task added." << std::endl;
+        // std::cout << "Task added." << std::endl;
+        Logger::info("Task added.");
     }
     else if (command == "list"){
         manager.listTodos();
     }
     else if (command == "done"){
         if (argc < 3){
-            std::cout << "Please provide task id." << std::endl;
+            // std::cout << "Please provide task id." << std::endl;
+            Logger::error("Please provide task id.");
             return;
         }
 
@@ -40,9 +44,11 @@ void CommandHandler::handle(int argc, char* argv[]){
 
         manager.markDone(id);
         
-        std::cout << "Task marked as done" << std::endl;
+        // std::cout << "Task marked as done" << std::endl;
+        Logger::info("Task marked as done");
     }
     else{
-        std::cout << "Unknown command." << std::endl;
+        // std::cout << "Unknown command." << std::endl;
+        Logger::error("Unknow command.");
     }
 }
