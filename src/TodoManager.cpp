@@ -27,3 +27,15 @@ void TodoManager::listTodos() const{
     }
 }
 
+void TodoManager::markDone(int id){
+    for (auto& todo : todos){
+        if (todo.id == id){
+            todo.done = true;
+
+            storage.save(todos);
+            return;
+        }
+    }
+
+    std::cout << "Task not found." << std::endl;
+}

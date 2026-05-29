@@ -16,4 +16,6 @@ public:
     void addTodo(const std::string& text);
 
     void listTodos() const;
+
+    void markDone(int id);
 };

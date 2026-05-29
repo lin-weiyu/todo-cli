@@ -30,6 +30,18 @@ void CommandHandler::handle(int argc, char* argv[]){
     else if (command == "list"){
         manager.listTodos();
     }
+    else if (command == "done"){
+        if (argc < 3){
+            std::cout << "Please provide task id." << std::endl;
+            return;
+        }
+
+        int id = std::stoi(argv[2]);
+
+        manager.markDone(id);
+        
+        std::cout << "Task marked as done" << std::endl;
+    }
     else{
         std::cout << "Unknown command." << std::endl;
     }

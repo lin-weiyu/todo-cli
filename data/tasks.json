@@ -3,5 +3,15 @@
         "done": false,
         "id": 1,
         "text": "learn json"
+    },
+    {
+        "done": true,
+        "id": 2,
+        "text": "learn git"
+    },
+    {
+        "done": false,
+        "id": 3,
+        "text": "learn cmake"
     }
 ]
