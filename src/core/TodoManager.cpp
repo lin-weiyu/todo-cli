@@ -1,5 +1,6 @@
 #include "core/TodoManager.h"
 #include <iostream>
+#include <cassert>
 
 TodoManager::TodoManager(){
     todos = storage.load();
@@ -28,6 +29,9 @@ void TodoManager::listTodos() const{
 }
 
 void TodoManager::markDone(int id){
+
+    assert(id > 0);
+
     for (auto& todo : todos){
         if (todo.id == id){
             todo.done = true;
