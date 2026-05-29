@@ -43,3 +43,7 @@ void TodoManager::markDone(int id){
 
     std::cout << "Task not found." << std::endl;
 }
+
+const std::vector<Todo>& TodoManager::getTodos()const{
+    return todos;
+}

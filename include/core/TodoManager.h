@@ -18,4 +18,6 @@ public:
     void listTodos() const;
 
     void markDone(int id);
+
+    const std::vector<Todo>& getTodos()const;
 };
