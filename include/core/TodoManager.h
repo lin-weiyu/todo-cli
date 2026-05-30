@@ -9,6 +9,8 @@ class TodoManager{
 private:
     std::vector<Todo> todos;
     IStorage& storage;
+    
+    int generateNextId() const;
 
 public:
     explicit TodoManager(IStorage& storage);

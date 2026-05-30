@@ -1,4 +1,5 @@
 #include "storage/Storage.h"
+#include "storage/JsonSerializer.h"
 
 #include <fstream>
 #include <iostream>
@@ -11,11 +12,9 @@ void Storage::save(const std::vector<Todo>& todos){
     json j = json::array();
 
     for (const auto& todo : todos){
-        j.push_back({
-            {"id", todo.id},
-            {"text", todo.text},
-            {"done", todo.done}
-        });
+        j.push_back(
+            JsonSerializer::toJson(todo)
+        );
     }
 
     std::ofstream file("../data/tasks.json");
@@ -37,14 +36,7 @@ std::vector<Todo> Storage::load(){
     file >> j;
 
     for (const auto& item : j){
-        Todo todo(
-            item["id"],
-            item["text"]
-        );
-
-        todo.done = item["done"];
-
-        todos.push_back(todo);
+        todos.push_back(JsonSerializer::fromJson(item));
     }
     
     return todos;

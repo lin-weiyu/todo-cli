@@ -16,6 +16,7 @@ add_executable(todo
     src/core/Todo.cpp
     src/core/TodoManager.cpp
     src/storage/Storage.cpp
+    src/storage/JsonSerializer.cpp
     src/cli/CommandHandler.cpp
     src/utils/Logger.cpp
 )
@@ -28,6 +29,7 @@ add_executable(todo_tests
     src/core/Todo.cpp
     src/core/TodoManager.cpp
     src/storage/Storage.cpp
+    src/storage/JsonSerializer.cpp
 )
 target_include_directories(todo_tests PRIVATE 
     include

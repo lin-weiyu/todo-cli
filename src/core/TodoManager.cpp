@@ -1,13 +1,23 @@
 #include "core/TodoManager.h"
 #include <iostream>
+#include <algorithm>
 #include <cassert>
 
 TodoManager::TodoManager(IStorage& storage):storage(storage){
     todos = storage.load();
 }
 
+int TodoManager::generateNextId() const{
+    int maxId = 0;
+    for (const auto& todo : todos){
+        maxId = std::max(maxId, todo.id);
+    }
+
+    return maxId + 1;
+}
+
 void TodoManager::addTodo(const std::string& text){
-    int id = todos.size() + 1;
+    int id = generateNextId();
 
     todos.push_back(Todo(id, text));
 
