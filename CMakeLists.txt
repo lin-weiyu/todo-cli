@@ -19,6 +19,10 @@ add_executable(todo
     src/storage/JsonSerializer.cpp
     src/cli/CommandHandler.cpp
     src/utils/Logger.cpp
+    src/commands/Addcommand.cpp
+    src/commands/DeleteCommand.cpp
+    src/commands/DoneCommand.cpp
+    src/commands/ListCommand.cpp
 )
 target_link_libraries(todo PRIVATE 
     nlohmann_json::nlohmann_json
@@ -31,6 +35,10 @@ add_executable(todo_tests
     src/storage/Storage.cpp
     src/storage/JsonSerializer.cpp
     src/utils/Logger.cpp
+    src/commands/AddCommand.cpp
+    src/commands/DeleteCommand.cpp
+    src/commands/DoneCommand.cpp
+    src/commands/ListCommand.cpp
 )
 target_include_directories(todo_tests PRIVATE 
     include
