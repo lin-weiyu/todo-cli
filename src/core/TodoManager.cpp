@@ -1,4 +1,5 @@
 #include "core/TodoManager.h"
+#include "utils/Logger.h"
 #include <iostream>
 #include <algorithm>
 #include <cassert>
@@ -56,4 +57,26 @@ void TodoManager::markDone(int id){
 
 const std::vector<Todo>& TodoManager::getTodos()const{
     return todos;
+}
+
+void TodoManager::deleteTodo(int id){
+
+    auto oldSize = todos.size();
+
+    todos.erase(
+        std::remove_if(
+            todos.begin(),
+            todos.end(),
+            [id](const Todo& todo){
+                return todo.id == id;
+            }
+        ),
+        todos.end()
+    );
+
+    if (todos.size() == oldSize){
+        std::cout << "Task not found" << std::endl;
+        return;
+    }
+    storage.save(todos);
 }

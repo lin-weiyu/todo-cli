@@ -22,4 +22,6 @@ public:
     void markDone(int id);
 
     const std::vector<Todo>& getTodos()const;
+
+    void deleteTodo(int id);
 };

@@ -49,6 +49,17 @@ void CommandHandler::handle(int argc, char* argv[]){
         // std::cout << "Task marked as done" << std::endl;
         Logger::info("Task marked as done");
     }
+    else if(command == "delete"){
+        if (argc < 3){
+            Logger::error("Please provide task id.");
+            return;
+        }
+
+        int id = std::stoi(argv[2]);
+
+        manager.deleteTodo(id);
+        // Logger::info("Task id deleted");
+    }
     else{
         // std::cout << "Unknown command." << std::endl;
         Logger::error("Unknow command.");

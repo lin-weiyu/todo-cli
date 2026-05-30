@@ -30,12 +30,14 @@ add_executable(todo_tests
     src/core/TodoManager.cpp
     src/storage/Storage.cpp
     src/storage/JsonSerializer.cpp
+    src/utils/Logger.cpp
 )
 target_include_directories(todo_tests PRIVATE 
     include
 )
 target_link_libraries(todo_tests PRIVATE
     GTest::gtest_main
+    spdlog::spdlog
 )
 include(GoogleTest)
 gtest_discover_tests(todo_tests)
