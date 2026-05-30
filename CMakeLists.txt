@@ -19,7 +19,7 @@ add_executable(todo
     src/storage/JsonSerializer.cpp
     src/cli/CommandHandler.cpp
     src/utils/Logger.cpp
-    src/commands/Addcommand.cpp
+    src/commands/AddCommand.cpp
     src/commands/DeleteCommand.cpp
     src/commands/DoneCommand.cpp
     src/commands/ListCommand.cpp
