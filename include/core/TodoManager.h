@@ -19,9 +19,9 @@ public:
 
     void listTodos() const;
 
-    void markDone(int id);
+    bool markDone(int id);
 
     const std::vector<Todo>& getTodos()const;
 
-    void deleteTodo(int id);
+    bool deleteTodo(int id);
 };

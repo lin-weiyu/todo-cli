@@ -38,10 +38,21 @@ TEST(TodoManagerTest, DeleteNonExistentTodo){
     manager.addTodo("test delete");
     
     manager.deleteTodo(999);
-
+    
     const auto& todos = manager.getTodos();
-
+    
     ASSERT_EQ(todos.size(), 2);
     EXPECT_EQ(todos[0].text, "learn delete");
     EXPECT_EQ(todos[1].text, "test delete");
+}
+
+TEST(TodoManagerTest, Return_value){
+    FakeStorage storage;
+    TodoManager manager(storage);
+    
+    manager.addTodo("learn delete");
+    manager.addTodo("test delete");
+    
+    EXPECT_TRUE(manager.deleteTodo(1));
+    EXPECT_FALSE(manager.deleteTodo(100));
 }

@@ -44,10 +44,12 @@ void CommandHandler::handle(int argc, char* argv[]){
 
         int id = std::stoi(argv[2]);
 
-        manager.markDone(id);
-        
-        // std::cout << "Task marked as done" << std::endl;
-        Logger::info("Task marked as done");
+        if (manager.markDone(id)){
+            Logger::info("Task marked as done");
+        }
+        else{
+            Logger::error("Task not found");
+        }   
     }
     else if(command == "delete"){
         if (argc < 3){
@@ -57,11 +59,14 @@ void CommandHandler::handle(int argc, char* argv[]){
 
         int id = std::stoi(argv[2]);
 
-        manager.deleteTodo(id);
-        // Logger::info("Task id deleted");
+        if (manager.deleteTodo(id)){
+            Logger::info("Task id deleted");
+        }
+        else{
+            Logger::error("Task not found");
+        }
     }
     else{
-        // std::cout << "Unknown command." << std::endl;
         Logger::error("Unknow command.");
     }
 }
