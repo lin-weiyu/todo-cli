@@ -2,16 +2,16 @@
 
 #include <vector>
 
-#include "storage/Storage.h"
 #include "core/Todo.h"
+#include "storage/IStorage.h"
 
 class TodoManager{
 private:
     std::vector<Todo> todos;
-    Storage storage;
+    IStorage& storage;
 
 public:
-    TodoManager();
+    explicit TodoManager(IStorage& storage);
 
     void addTodo(const std::string& text);
 

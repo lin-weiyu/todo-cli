@@ -3,10 +3,12 @@
 #include <iostream>
 #include <string>
 
+#include "storage/Storage.h"
 #include "core/TodoManager.h"
 
 void CommandHandler::handle(int argc, char* argv[]){
-    TodoManager manager;
+    Storage storage;
+    TodoManager manager(storage);
 
     if (argc < 2){
         // std::cout << "Usage: ./toda <command>" << std::endl;

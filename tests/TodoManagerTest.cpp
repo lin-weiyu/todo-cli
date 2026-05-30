@@ -1,9 +1,11 @@
 #include <gtest/gtest.h>
 
 #include "core/TodoManager.h"
+#include "FakeStorage.h"
 
 TEST(TodoManagerTest, AddTodo){
-    TodoManager manager;
+    FakeStorage storage;
+    TodoManager manager(storage);
 
     manager.addTodo("learn testing");
 

@@ -2,7 +2,7 @@
 #include <iostream>
 #include <cassert>
 
-TodoManager::TodoManager(){
+TodoManager::TodoManager(IStorage& storage):storage(storage){
     todos = storage.load();
 }
 

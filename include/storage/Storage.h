@@ -4,9 +4,11 @@
 
 #include "core/Todo.h"
 
-class Storage{
-public:
-    void save(const std::vector<Todo>& todos);
+#include "storage/IStorage.h"
 
-    std::vector<Todo> load();
+class Storage:public IStorage{
+public:
+    void save(const std::vector<Todo>& todos) override;
+
+    std::vector<Todo> load() override;
 };
