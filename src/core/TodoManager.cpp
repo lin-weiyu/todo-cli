@@ -2,7 +2,6 @@
 #include "utils/Logger.h"
 #include <iostream>
 #include <algorithm>
-#include <cassert>
 
 TodoManager::TodoManager(IStorage& storage):storage(storage){
     todos = storage.load();
@@ -39,27 +38,25 @@ void TodoManager::listTodos() const{
     }
 }
 
-void TodoManager::markDone(int id){
-
-    assert(id > 0);
+bool TodoManager::markDone(int id){
 
     for (auto& todo : todos){
         if (todo.id == id){
             todo.done = true;
 
             storage.save(todos);
-            return;
+            return true;
         }
     }
 
-    std::cout << "Task not found." << std::endl;
+    return false;
 }
 
 const std::vector<Todo>& TodoManager::getTodos()const{
     return todos;
 }
 
-void TodoManager::deleteTodo(int id){
+bool TodoManager::deleteTodo(int id){
 
     auto oldSize = todos.size();
 
@@ -75,8 +72,8 @@ void TodoManager::deleteTodo(int id){
     );
 
     if (todos.size() == oldSize){
-        std::cout << "Task not found" << std::endl;
-        return;
+        return false;
     }
     storage.save(todos);
+    return true;
 }
