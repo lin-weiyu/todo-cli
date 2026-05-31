@@ -41,14 +41,24 @@ void CommandHandler::handle(int argc, char* argv[]){
             Logger::error("Please provide task id.");
             return;
         }
-
-        int id = std::stoi(argv[2]);
-
+        int id = 0;
+        try{
+            id = std::stoi(argv[2]);
+        }
+        catch (const std::invalid_argument&){
+            Logger::error("Task id must be a number");
+            return;
+        }
+        catch (const std::out_of_range&){
+            Logger::error("Task id is too large");
+            return;
+        }
         if (manager.markDone(id)){
             Logger::info("Task marked as done");
         }
         else{
             Logger::error("Task not found");
+            return;
         }   
     }
     else if(command == "delete"){
@@ -57,13 +67,25 @@ void CommandHandler::handle(int argc, char* argv[]){
             return;
         }
 
-        int id = std::stoi(argv[2]);
+        int id = 0;
+        try{
+            id = std::stoi(argv[2]);
+        }
+        catch (const std::invalid_argument&){
+            Logger::error("Task id must be a number");
+            return;
+        }
+        catch (const std::out_of_range&){
+            Logger::error("Task id is too large");
+            return;
+        }
 
         if (manager.deleteTodo(id)){
             Logger::info("Task id deleted");
         }
         else{
             Logger::error("Task not found");
+            return;
         }
     }
     else if(command == "search"){
