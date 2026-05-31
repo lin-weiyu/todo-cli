@@ -102,6 +102,34 @@ void CommandHandler::handle(int argc, char* argv[]){
 
         Logger::info("Search successful.");
     }
+    else if (command == "edit"){
+        if (argc < 4){
+            Logger::error("Please provide task id and text.");
+            return;
+        }
+
+        int id = 0;
+        try{
+            id = std::stoi(argv[2]);
+        }
+        catch (const std::invalid_argument&){
+            Logger::error("Task id must be a number");
+            return;
+        }
+        catch (const std::out_of_range&){
+            Logger::error("Task id is too large");
+            return;
+        }
+
+        if (manager.editTodo(id, argv[3])){
+            Logger::info("successed edit.");
+        }
+        else{
+            Logger::info("Please provide right id and text");
+        }
+
+        manager.listTodos();
+    }
     else{
         Logger::error("Unknow command.");
     }

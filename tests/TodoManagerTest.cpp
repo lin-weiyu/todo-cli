@@ -83,8 +83,22 @@ TEST(TodoManagerTest, SearchTodoNotFound)
 
     manager.addTodo("learn git");
     manager.addTodo("learn cmake");
-
+    
     auto result = manager.searchTodos("test");
-
+    
     EXPECT_TRUE(result.empty());
+}
+
+TEST(TodoManagerTest, EditTodo){
+    FakeStorage storage;
+    TodoManager manager(storage);
+    
+    manager.addTodo("learn git");
+    manager.addTodo("learn cmake");
+    
+    manager.editTodo(1, "learn edit");
+
+    auto result = manager.getTodos();
+    ASSERT_EQ(result.size(), 2);
+    EXPECT_EQ(result[0].text, "learn edit");
 }

@@ -28,4 +28,6 @@ public:
     bool deleteTodo(int id);
 
     std::vector<Todo> searchTodos(const std::string& text)const;
+
+    bool editTodo(int id, const std::string& text);
 };
