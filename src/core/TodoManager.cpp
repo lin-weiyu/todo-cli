@@ -89,14 +89,26 @@ bool TodoManager::deleteTodo(int id){
     return true;
 }
 
-    std::vector<Todo> TodoManager::searchTodos(const std::string& text)const{
-        std::vector<Todo> result;
+std::vector<Todo> TodoManager::searchTodos(const std::string& text)const{
+    std::vector<Todo> result;
 
-        for (const auto& todo: todos){
-            if (todo.text.find(text) != std::string::npos){
-                result.push_back(todo);
-            }
+    for (const auto& todo: todos){
+        if (todo.text.find(text) != std::string::npos){
+            result.push_back(todo);
         }
-
-        return result;
     }
+
+    return result;
+}
+
+bool TodoManager::editTodo(int id, const std::string& text){
+    for (auto& todo : todos){
+        if (id == todo.id){
+            todo.text = text;
+            storage.save(todos);
+            return true;
+        }
+    }
+
+    return false;
+}
