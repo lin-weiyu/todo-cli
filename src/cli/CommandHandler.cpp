@@ -66,6 +66,20 @@ void CommandHandler::handle(int argc, char* argv[]){
             Logger::error("Task not found");
         }
     }
+    else if(command == "search"){
+        if (argc < 3){
+            Logger::error("Please provide task text.");
+            return;
+        }
+
+        const std::string& task_text = argv[2];
+        
+        std::vector<Todo> result = manager.searchTodos(task_text);
+
+        manager.printTodos(result);
+
+        Logger::info("Search successful.");
+    }
     else{
         Logger::error("Unknow command.");
     }

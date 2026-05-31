@@ -2,6 +2,7 @@
 #include "utils/Logger.h"
 #include <iostream>
 #include <algorithm>
+#include <string>
 
 TodoManager::TodoManager(IStorage& storage):storage(storage){
     todos = storage.load();
@@ -24,7 +25,14 @@ void TodoManager::addTodo(const std::string& text){
     storage.save(todos);
 }
 
-void TodoManager::listTodos() const{
+
+void TodoManager::printTodos(const std ::vector<Todo>& todos)const{
+
+    if (todos.size() == 0){
+        std::cout << "结果为空" << std::endl;
+        return;
+    }
+
     for (const auto& todo : todos){
         std::cout << todo.id << ". ";
         if (todo.done){
@@ -33,9 +41,12 @@ void TodoManager::listTodos() const{
         else{
             std::cout << "[ ] ";
         }
-
+    
         std::cout << todo.text << std::endl;
     }
+}
+void TodoManager::listTodos() const{
+    printTodos(todos);
 }
 
 bool TodoManager::markDone(int id){
@@ -77,3 +88,15 @@ bool TodoManager::deleteTodo(int id){
     storage.save(todos);
     return true;
 }
+
+    std::vector<Todo> TodoManager::searchTodos(const std::string& text)const{
+        std::vector<Todo> result;
+
+        for (const auto& todo: todos){
+            if (todo.text.find(text) != std::string::npos){
+                result.push_back(todo);
+            }
+        }
+
+        return result;
+    }
