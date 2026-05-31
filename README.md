@@ -17,4 +17,9 @@ mkdir build
 cd build
 cmake ..
 make
+./todo add "learn English"
+./todo list
+./todo delete id
+./todo done id
+./todo search "text"
 ```
