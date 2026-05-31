@@ -16,6 +16,8 @@ public:
     explicit TodoManager(IStorage& storage);
 
     void addTodo(const std::string& text);
+    
+    void printTodos(const std::vector<Todo>& todos)const;
 
     void listTodos() const;
 
@@ -24,4 +26,6 @@ public:
     const std::vector<Todo>& getTodos()const;
 
     bool deleteTodo(int id);
+
+    std::vector<Todo> searchTodos(const std::string& text)const;
 };

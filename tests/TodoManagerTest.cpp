@@ -1,4 +1,5 @@
 #include <gtest/gtest.h>
+#include <string>
 
 #include "core/TodoManager.h"
 #include "FakeStorage.h"
@@ -55,4 +56,35 @@ TEST(TodoManagerTest, Return_value){
     
     EXPECT_TRUE(manager.deleteTodo(1));
     EXPECT_FALSE(manager.deleteTodo(100));
+}
+
+
+TEST(TodoManagerTest, SearchTodo)
+{
+    FakeStorage storage;
+    TodoManager manager(storage);
+
+    manager.addTodo("learn git");
+    manager.addTodo("test serializer");
+    manager.addTodo("test delete");
+
+    auto result = manager.searchTodos("test");
+
+    ASSERT_EQ(result.size(), 2);
+
+    EXPECT_EQ(result[0].text, "test serializer");
+    EXPECT_EQ(result[1].text, "test delete");
+}
+
+TEST(TodoManagerTest, SearchTodoNotFound)
+{
+    FakeStorage storage;
+    TodoManager manager(storage);
+
+    manager.addTodo("learn git");
+    manager.addTodo("learn cmake");
+
+    auto result = manager.searchTodos("test");
+
+    EXPECT_TRUE(result.empty());
 }
