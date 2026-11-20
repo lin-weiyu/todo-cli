@@ -26,6 +26,7 @@
 - [004] 2026-11-20 — docker build 报错（拉取 ubuntu 基础镜像超时，国内网络）
 - [005] 2026-11-20 — docker build 报错（容器内 apt 拉取 ports.ubuntu.com 失败 502）
 - [006] 2026-11-20 — docker run 输出「结果为空」（数据文件相对路径 bug）
+- [007] 2026-11-20 — .cache 是什么？要加进 gitignore 吗？
 
 ---
 
@@ -123,3 +124,19 @@
 - **涉及概念**：相对路径 vs 绝对路径、工作目录（CWD）、配置外置/可配置化。
 - **相关代码/文件**：`src/storage/Storage.cpp:20,28`（`../data/tasks.json`）、`Dockerfile` 的 WORKDIR 与 CMD。
 - **延伸**：修复方向——把数据路径改成可配置（环境变量/参数）或固定到明确位置（如 `~/.todo/`），解耦 CWD；可借这次重构练 TDD。
+
+---
+
+## [007] 2026-11-20 — .cache 是什么？要加进 gitignore 吗？
+
+- **问题**：项目根目录出现 `.cache` 目录，是不是 Docker 的缓存？要不要加进 `.gitignore`？
+- **背景**：跑完 docker / 用编辑器写代码后，项目里多了个 `.cache`。
+- **回答**：
+  - **`.cache` 不是 Docker 的缓存**，是 clangd（编辑器用的 C++ 语言服务器）的索引缓存 `.cache/clangd/index/`。Docker 的缓存在 Docker Desktop 内部，不在项目目录。
+  - **要加进 `.gitignore`**：它是机器相关、体积大、可自动重建、频繁变化的工具产物，提交进 git 会污染历史。
+  - **改法**：`.gitignore` 加一行 `.cache/`。
+  - **通用原则**：git 里只放「源码 + 构建配置 + 文档 + 测试」；不放「构建产物（build/）、IDE/工具缓存（.cache/、.DS_Store）、个人数据」。
+  - **相关观察**：`data/tasks.json`（个人待办数据）目前被 git 跟踪，严格说用户数据也不该提交，可后续再处理。
+- **涉及概念**：.gitignore、项目卫生（什么该提交/不该提交）、工具缓存 vs 源码。
+- **相关代码/文件**：`.gitignore`。
+- **延伸**：可考虑把个人数据 `data/tasks.json` 从版本控制移除，改用一份示例数据文件。

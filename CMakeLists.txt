@@ -80,6 +80,7 @@ target_link_libraries(todo PRIVATE
 # =========================
 add_executable(todo_tests
     tests/TodoManagerTest.cpp
+    tests/StorageTest.cpp
     src/core/Todo.cpp
     src/core/TodoManager.cpp
     src/storage/Storage.cpp

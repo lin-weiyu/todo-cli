@@ -2,12 +2,18 @@
 #include "utils/Logger.h"
 #include <iostream>
 #include <string>
+#include <cstdlib>
 
 #include "storage/Storage.h"
 #include "core/TodoManager.h"
 
 void CommandHandler::handle(int argc, char* argv[]){
-    Storage storage;
+    std::string filePath = "data/tasks.json";
+
+    if (const char* envPath = std::getenv("TODO_DATA_FILE")){
+        filePath = envPath;
+    }
+    Storage storage(filePath);
     TodoManager manager(storage);
 
     if (argc < 2){
