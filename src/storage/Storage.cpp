@@ -8,6 +8,8 @@
 
 using json = nlohmann::json;
 
+Storage::Storage(const std::string& filePath) : filePath_(filePath){}
+
 void Storage::save(const std::vector<Todo>& todos){
     json j = json::array();
 
@@ -17,7 +19,7 @@ void Storage::save(const std::vector<Todo>& todos){
         );
     }
 
-    std::ofstream file("../data/tasks.json");
+    std::ofstream file(filePath_);
 
     file << j.dump(4);
 }
@@ -25,7 +27,7 @@ void Storage::save(const std::vector<Todo>& todos){
 std::vector<Todo> Storage::load(){
     std::vector<Todo> todos;
 
-    std::ifstream file("../data/tasks.json");
+    std::ifstream file(filePath_);
 
     if (!file){
         return todos;
