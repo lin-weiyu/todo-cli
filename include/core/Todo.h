@@ -12,7 +12,7 @@ public:
     std::string text;    ///< 任务内容
     bool done;           ///< 是否完成
 
-    /*
+    /**
     * @brief 构造一条任务。 
     * @param id 任务 id。 
     * @param text 任务内容。 

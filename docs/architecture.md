@@ -27,7 +27,7 @@ graph TD
 
 **依赖方向（单向）：** CLI → 业务 → 存储接口。上层依赖接口、不依赖具体实现；Storage 不知道 TodoManager 的存在，只知道 std::vector<Todo>。
 
-##  3.数据流
+## 3. 数据流
 
 以 `./build/todo add "写文档"` 为例：
 

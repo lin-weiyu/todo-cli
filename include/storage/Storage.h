@@ -13,7 +13,7 @@
 
 class Storage:public IStorage{
 public:
-    /*
+    /**
     * @brief 构造 Storage。 
     * @param filePath 数据文件路径。 
     */

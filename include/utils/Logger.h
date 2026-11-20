@@ -1,5 +1,5 @@
 // Logger.h
-/*
+/**
 * @brief 日志工具（spdlog 的简单封装）。 
 */
 #pragma once
