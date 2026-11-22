@@ -6,7 +6,7 @@
 
 #include <string>
 
-TEST(SQLiteSStorageTest, LoadFromNewDatabaseReturnsEmpty){
+TEST(SQLiteStorageTest, LoadFromNewDatabaseReturnsEmpty){
     const std::string path = "test_sqlite_storage_tmp.db";
 
     std::remove(path.c_str());
