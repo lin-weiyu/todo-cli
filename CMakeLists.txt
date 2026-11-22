@@ -6,6 +6,8 @@ set(CMAKE_CXX_STANDARD 17)
 
 enable_testing()
 
+find_package(SQLite3 REQUIRED)
+
 # =========================
 # FetchContent (自动下载依赖)
 # =========================
@@ -74,6 +76,7 @@ add_executable(todo
 target_link_libraries(todo PRIVATE
     nlohmann_json::nlohmann_json
     spdlog::spdlog
+    SQLite3::SQLite3
 )
 
 # =========================
@@ -97,6 +100,7 @@ target_link_libraries(todo_tests PRIVATE
     GTest::gtest_main
     spdlog::spdlog
     nlohmann_json::nlohmann_json
+    SQLite3::SQLite3
 )
 
 include(GoogleTest)
