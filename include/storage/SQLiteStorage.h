@@ -2,6 +2,8 @@
 
 #include "storage/IStorage.h"
 
+#include <sqlite3.h>
+
 #include <string>
 #include <vector>
 
@@ -30,7 +32,7 @@ public:
     * 后续实现中构造函数还会负责初始化 todos 表。
     */
     explicit SQLiteStorage(const std::string& dbpath);
-
+    ~SQLiteStorage() override;
     /**
     * @brief 从 SQLite 数据库中读取全部任务。
     * @return 数据库中的任务列表；如果数据库为空，则返回空列表。
@@ -48,4 +50,5 @@ public:
 
 private:
     std::string dbPath_;   ///< SQLite 数据库文件路径。
+    sqlite3* db_ = nullptr; ///< SQLite. 数据库链接  
 };
