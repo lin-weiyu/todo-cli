@@ -1,7 +1,6 @@
 #include <gtest/gtest.h>
-
 #include "storage/SQLiteStorage.h"
-
+#include "core/Todo.h"
 #include <cstddef>
 #include <sqlite3.h>
 #include <cstdio>
