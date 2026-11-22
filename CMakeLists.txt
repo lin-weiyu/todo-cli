@@ -66,6 +66,7 @@ add_executable(todo
     src/core/TodoManager.cpp
     src/storage/Storage.cpp
     src/storage/JsonSerializer.cpp
+    src/storage/SQLiteStorage.cpp
     src/cli/CommandHandler.cpp
     src/utils/Logger.cpp
 )
@@ -79,6 +80,7 @@ target_link_libraries(todo PRIVATE
 # tests
 # =========================
 add_executable(todo_tests
+    tests/SQLiteStorageTest.cpp
     tests/TodoManagerTest.cpp
     tests/StorageTest.cpp
     src/core/Todo.cpp
