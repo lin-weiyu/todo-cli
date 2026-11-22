@@ -87,6 +87,7 @@ add_executable(todo_tests
     src/core/TodoManager.cpp
     src/storage/Storage.cpp
     src/storage/JsonSerializer.cpp
+    src/storage/SQLiteStorage.cpp
     src/utils/Logger.cpp
 )
 
