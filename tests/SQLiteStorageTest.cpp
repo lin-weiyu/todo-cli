@@ -66,3 +66,29 @@ TEST(SQLiteStorageTest, ConstructorCreatesTodosTable){
     std::remove(path.c_str());
 
 }
+
+TEST(SQLiteStorageTest, SaveAndLoadRoundTrip){
+    const std::string path = "test_sqlite_storage_tmp.db";
+
+    std::remove(path.c_str());
+
+    SQLiteStorage storage(path);
+
+    std::vector<Todo> todos;
+    todos.push_back(Todo(1, "bug milk"));
+    todos.push_back(Todo(2, "write report"));
+
+    storage.save(todos);
+
+    auto loaded = storage.load();
+
+    ASSERT_EQ(loaded.size(), 2);
+    EXPECT_EQ(loaded[0].id, 1);
+    EXPECT_EQ(loaded[0].text, "bug milk");
+    EXPECT_FALSE(loaded[0].done);
+    EXPECT_EQ(loaded[1].id, 2);
+    EXPECT_EQ(loaded[1].text, "write report");
+    EXPECT_FALSE(loaded[1].done);
+
+    std::remove(path.c_str());
+}
