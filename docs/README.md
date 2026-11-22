@@ -27,5 +27,6 @@
 - [build-system.md](topics/build-system.md) — CMake、FetchContent 依赖管理
 - [dev-environment.md](topics/dev-environment.md) — 开发环境一致性、可复现环境、Dev Container
 - [git-workflow.md](topics/git-workflow.md) — 分支、PR、合并流程
+- [database.md](topics/database.md) — 数据库类型、SQLite 推荐路线、PostgreSQL 后续迁移
 
 - [engineering-roadmap.md](topics/engineering-roadmap.md) — 当前产品方向、面试前阶段目标与导师交接原则

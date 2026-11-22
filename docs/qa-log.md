@@ -31,6 +31,9 @@
 - [009] 2026-11-20 — 接续导师约定：项目如何深入，以及两周面试准备路线
 - [010] 2026-11-20 — 确定长期多人协作愿景和面试前两周阶段目标，并写成交接文档
 - [011] 2026-11-20 — 工程项目需要什么文档，怎么管理
+- [012] 2026-11-21 — JSON 存储升级到数据库时，应该选哪种数据库
+- [013] 2026-11-22 — 项目中怎么设计、引入和使用 SQLite 数据库
+- [014] 2026-11-22 — 明确导师式编码原则：模型引导，用户亲自实现
 
 ---
 
@@ -214,3 +217,51 @@
 - **涉及概念**：文档分层、Doxygen、架构文档、数据模型、Definition of Done。
 - **相关代码/文件**：[文档主题](topics/documentation.md)、[IStorage.h](../include/storage/IStorage.h)、[TodoManager.h](../include/core/TodoManager.h)。
 - **延伸**：下一步先写 `docs/architecture.md`，再配置 Doxygen。
+---
+
+## [012] 2026-11-21 — JSON 存储升级到数据库时，应该选哪种数据库
+
+- **问题**：项目第一阶段要把 JSON 文件存储升级为数据库；数据库有哪些类型、差异和优缺点？考虑未来多类型文件管理、用户、团队和项目协作，应该选哪种？
+- **背景**：用户已经完成 Doxygen 安装，准备进入 SQLite/数据库阶段；此前没有数据库使用经验，需要先建立数据库心智模型，再决定实现路线。
+- **回答**：
+  - **数据库不是一种东西**，而是一类数据管理系统；常见路线包括嵌入式关系型数据库（SQLite）、服务端关系型数据库（PostgreSQL/MySQL）、文档数据库（MongoDB）、键值数据库（Redis/RocksDB）、搜索引擎（Elasticsearch/OpenSearch）和对象存储（S3/MinIO 等）。
+  - **本项目第一阶段明确推荐 SQLite**：它是嵌入到程序里的本地 SQL 数据库，零服务部署、学习成本低、适合 CLI 工具；可以学习表、主键、外键、索引、事务、参数绑定和迁移，同时把原来的 JSON 快照存储升级为可查询、可约束的数据模型。
+  - **未来多人团队协作阶段推荐迁移/扩展到 PostgreSQL**：多人在线需要服务端、可信身份认证、权限校验和多客户端并发访问；PostgreSQL 的客户端/服务端模型、权限、并发控制和运维能力更适合在线协作系统。
+  - **附件文件不建议直接塞进数据库作为主方案**：推荐应用管理一个附件目录/对象存储，数据库保存附件元数据、所属任务、文件名、MIME 类型、大小、校验值、存储路径/对象 key 和权限关系。SQLite 事务只能保护数据库写入，不能自动保护文件系统操作。
+  - **当前实现不要只把 `IStorage::load()/save(all)` 原封不动换成 SQLite**：那仍然是全量快照思维，无法体现数据库优势，也容易继续存在丢失更新问题。应逐步设计 `add/update/delete/query` 等按操作读写的 Repository/DAO 接口，并用事务包住一次业务操作。
+- **涉及概念**：关系型数据库、SQL、SQLite、PostgreSQL、嵌入式数据库、客户端/服务端数据库、事务、约束、索引、附件元数据、迁移路径、Repository/DAO。
+- **相关代码/文件**：[存储接口](../include/storage/IStorage.h)、[JSON 存储实现](../src/storage/Storage.cpp)、[路线文档](topics/engineering-roadmap.md)、[数据库主题笔记](topics/database.md)。
+- **延伸**：下一步建议先写数据模型文档与验收测试：任务表最小字段、旧 JSON 导入规则、失败不覆盖旧数据；然后引入 SQLite C API/封装库，按 TDD 做最小 `add/list` 闭环。
+---
+
+## [013] 2026-11-22 — 项目中怎么设计、引入和使用 SQLite 数据库
+
+- **问题**：开始把 JSON 替换成 SQLite 时，应该怎么设计数据库、怎么把数据库引入项目、代码里又怎么使用数据库？
+- **背景**：用户已明确第一阶段采用 SQLite，但数据库经验有限，需要从工程流程和实际代码使用方式建立心智模型。
+- **回答**：
+  - 数据库引入流程不是先写 SQL，而是先确定数据模型与业务边界：当前最小模型只有 `Todo(id, text, done)`，后续再扩展附件、用户、团队、项目等表。
+  - 第一版推荐做“可运行的 SQLite 桥接层”：新增 `SQLiteStorage` 实现现有 `IStorage::load()/save(all)`，用 `todos` 表保存任务，先让项目从 JSON 文件切换到 SQLite 文件；这一步是教学和迁移桥梁，不代表最终数据库架构。
+  - 数据库表设计从当前业务对象映射开始：`todos(id INTEGER PRIMARY KEY, text TEXT NOT NULL, done INTEGER NOT NULL DEFAULT 0)`；后续附件用 `attachments` 表通过 `task_id` 外键关联任务。
+  - 实际代码使用 SQLite 的基本生命周期是：打开数据库、创建表、准备 SQL、绑定参数、执行、读取结果、释放语句、关闭数据库；在 C++ 中应使用 RAII 包装连接和语句，避免资源泄漏。
+  - 测试顺序应先于实现：新增 `SQLiteStorageTest` 验证空库读取、保存后再读取、done 状态保持、保存空列表清空数据、重新打开数据库数据仍存在。
+  - 第一次接入需要同步更新 CMake/CI/Docker：`find_package(SQLite3 REQUIRED)`，目标链接 SQLite；CI 和 Docker 安装 `libsqlite3-dev`。
+  - 后续第二阶段再把快照接口重构为真正数据库式 Repository/DAO：`add/list/markDone/delete/search/edit` 分别对应 INSERT/SELECT/UPDATE/DELETE，而不是每次全量覆盖。
+- **涉及概念**：数据建模、表设计、主键、约束、SQLite C API、prepared statement、参数绑定、事务、RAII、Repository/DAO、测试驱动迁移。
+- **相关代码/文件**：[存储接口](../include/storage/IStorage.h)、[JSON 存储实现](../src/storage/Storage.cpp)、[命令入口](../src/cli/CommandHandler.cpp)、[CMakeLists.txt](../CMakeLists.txt)、[数据库主题](topics/database.md)。
+- **延伸**：下一步建议先写 `docs/data-model.md` 或直接先写 `SQLiteStorageTest.cpp`，明确 `todos` 表的字段与第一版验收标准，再实现 SQLite 存储。
+---
+
+## [014] 2026-11-22 — 明确导师式编码原则：模型引导，用户亲自实现
+
+- **问题**：在 SQLite 实现过程中，模型曾直接写完整代码，偏离了“长期项目导师”的方式；需要重新明确后续应该怎么教、怎么实现，以及让后续接手的模型也遵守同样原则。
+- **背景**：用户是工程初学者，目标是通过第一个 C++ 项目学习工程能力，而不是拿到一套自己无法解释的代码。当前正在从 JSON 存储逐步引入 SQLite。
+- **回答**：
+  - 后续默认采用“导师引导、用户亲自编码”的方式：模型解释目标、原理、文件位置、预期报错和验证方法；用户自己写主要代码；模型再检查 diff、运行测试并解释问题。
+  - 实现任务按「需求 → 设计 → 测试 → 实现 → 验证 → 回顾」推进；编码阶段优先采用小步 TDD：Red 写失败测试，Green 写最小实现，Refactor 再整理工程质量。
+  - 模型可以给小段骨架、伪代码和局部示例，但不应在“带我实现/一步步引导”的语境下直接新增完整实现文件或一次性改完功能。
+  - 每一步都要讲清楚为什么这样做、当前阶段是不是临时桥接、后续会如何演进。例如 SQLiteStorage 先适配 `IStorage::load()/save(all)` 时，必须说明它仍是快照语义的迁移桥梁，不是最终 Repository/DAO。
+  - 项目级规则已写入 [CLAUDE.md](../CLAUDE.md)，长期偏好也写入用户记忆，方便后续模型接手时继续保持同样教学方式。
+- **涉及概念**：导师式编程、TDD、Red/Green/Refactor、学习型项目、工程交接、可解释实现、Definition of Done。
+- **相关代码/文件**：[项目规则](../CLAUDE.md)、[数据库主题](topics/database.md)、[SQLiteStorage 测试](../tests/SQLiteStorageTest.cpp)、[存储接口](../include/storage/IStorage.h)。
+- **延伸**：继续 SQLite 实现时，保持“小步测试 → 用户实现 → 运行验证 → 回顾”的节奏；下一步是让 `SQLiteStorage` 构造函数创建 `todos` 表，再进入保存/读取测试。
+
