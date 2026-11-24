@@ -4,17 +4,35 @@
 #include <string>
 #include <cstdlib>
 
+#include "storage/IStorage.h"
+#include "storage/SQLiteStorage.h"
 #include "storage/Storage.h"
 #include "core/TodoManager.h"
 
 void CommandHandler::handle(int argc, char* argv[]){
-    std::string filePath = "data/tasks.json";
-
-    if (const char* envPath = std::getenv("TODO_DATA_FILE")){
-        filePath = envPath;
+    std::string storageType = "json";
+    if (const char* envType = std::getenv("TODO_STORAGE")){
+        storageType = envType;
     }
-    Storage storage(filePath);
-    TodoManager manager(storage);
+
+    std::unique_ptr<IStorage> storage;
+
+    if (storageType == "sqlite"){
+        std::string dbPath = "data/tasks.db";
+        if (const char* envDb = std::getenv("TODO_DB_FILE")){
+            dbPath = envDb;
+        }
+        storage = std::make_unique<SQLiteStorage>(dbPath);
+    }
+    else{
+        std::string filePath = "data/tasks.json";
+        if (const char* envFile = std::getenv("TODO_DATA_FILE")){
+            filePath = envFile;
+        }
+        storage = std::make_unique<Storage>(filePath);
+    }
+
+    TodoManager manager(*storage);
 
     if (argc < 2){
         // std::cout << "Usage: ./toda <command>" << std::endl;
