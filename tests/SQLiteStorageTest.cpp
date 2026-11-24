@@ -92,7 +92,7 @@ TEST(SQLiteStorageTest, SaveAndLoadRoundTrip){
     std::remove(path.c_str());
 }
 
-TEST(SQLiteStorageTest, SveReplacesPreviousSnapshot){
+TEST(SQLiteStorageTest, SaveReplacesPreviousSnapshot){
     const std::string path = "test_sqlite_storage_tmp.db";
 
     std::remove(path.c_str());
@@ -111,7 +111,7 @@ TEST(SQLiteStorageTest, SveReplacesPreviousSnapshot){
     std::remove(path.c_str());
 }
 
-TEST(SQLiteStorageTest, SaveEmpthListClearDatabase){
+TEST(SQLiteStorageTest, SaveEmptyListClearsDatabase){
     const std::string path = "test_sqlite_storage_tmp.db";
 
     std::remove(path.c_str());
