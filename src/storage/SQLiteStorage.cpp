@@ -41,7 +41,7 @@ std::vector<Todo> SQLiteStorage::load(){
         int done = sqlite3_column_int(stmt, 2);
 
         Todo todo(id, rawText ? reinterpret_cast<const char*>(rawText) : "");
-        todo.done = done;
+        todo.done = done ? 1 : 0;
         todos.push_back(todo);
     }
 
@@ -67,7 +67,7 @@ void SQLiteStorage::save(const std::vector<Todo>& todos){
         for (const auto& todo : todos){
             sqlite3_bind_int(stmt, 1, todo.id);
             sqlite3_bind_text(stmt, 2, todo.text.c_str(), -1, SQLITE_TRANSIENT);
-            sqlite3_bind_int(stmt, 3, todo.done);
+            sqlite3_bind_int(stmt, 3, todo.done ? 1 : 0);
 
             if (sqlite3_step(stmt) != SQLITE_DONE){
                 throw std::runtime_error("insert failed");
