@@ -91,3 +91,39 @@ TEST(SQLiteStorageTest, SaveAndLoadRoundTrip){
 
     std::remove(path.c_str());
 }
+
+TEST(SQLiteStorageTest, SveReplacesPreviousSnapshot){
+    const std::string path = "test_sqlite_storage_tmp.db";
+
+    std::remove(path.c_str());
+
+    SQLiteStorage storage(path);
+
+    storage.save({Todo(1, "old todo"), Todo(2, "kept todo")});
+    storage.save({Todo(2, "kept todo")});
+
+    auto loaded = storage.load();
+
+    ASSERT_EQ(loaded.size(), 1);
+    EXPECT_EQ(loaded[0].id, 2);
+    EXPECT_EQ(loaded[0].text, "kept todo");
+
+    std::remove(path.c_str());
+}
+
+TEST(SQLiteStorageTest, SaveEmpthListClearDatabase){
+    const std::string path = "test_sqlite_storage_tmp.db";
+
+    std::remove(path.c_str());
+
+    SQLiteStorage storage(path);
+
+    storage.save({Todo(1, "todo one"), Todo(2, "todo two")});
+    storage.save({});
+
+    auto loaded = storage.load();
+
+    EXPECT_TRUE(loaded.empty());
+
+    std::remove(path.c_str());
+}
