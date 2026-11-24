@@ -1,7 +1,7 @@
 #include "storage/SQLiteStorage.h"
 #include "core/Todo.h"
 #include <sqlite3.h>
-
+#include <stdexcept>
 #include <string>
 #include <vector>
 
@@ -51,22 +51,43 @@ std::vector<Todo> SQLiteStorage::load(){
 }
 
 void SQLiteStorage::save(const std::vector<Todo>& todos){
-    sqlite3_exec(db_, "DELETE FROM todos;", nullptr, nullptr, nullptr);
 
     sqlite3_stmt* stmt = nullptr;
-    const char* sql = "INSERT INTO todos (id, text, done) VALUES (?, ?, ?);";
-    sqlite3_prepare_v2(db_, sql, -1, &stmt, nullptr);
 
-    for (const auto& todo : todos){
-        sqlite3_bind_int(stmt, 1, todo.id);
-        sqlite3_bind_text(stmt, 2, todo.text.c_str(), -1, SQLITE_TRANSIENT);
-        sqlite3_bind_int(stmt, 3, todo.done ? 1 : 0);
+    sqlite3_exec(db_, "BEGIN;", nullptr, nullptr, nullptr);
 
-        sqlite3_step(stmt);
+    try{
+        sqlite3_exec(db_, "DELETE FROM todos;", nullptr, nullptr, nullptr);
 
-        sqlite3_reset(stmt);
-        sqlite3_clear_bindings(stmt);
+        const char* sql = "INSERT INTO todos (id, text, done) VALUES (?, ?, ?);";
+        if (sqlite3_prepare_v2(db_, sql, -1, &stmt, nullptr) != SQLITE_OK){
+            throw std::runtime_error("prepare insert failed");
+        }
+
+        for (const auto& todo : todos){
+            sqlite3_bind_int(stmt, 1, todo.id);
+            sqlite3_bind_text(stmt, 2, todo.text.c_str(), -1, SQLITE_TRANSIENT);
+            sqlite3_bind_int(stmt, 3, todo.done);
+
+            if (sqlite3_step(stmt) != SQLITE_DONE){
+                throw std::runtime_error("insert failed");
+            }
+
+            sqlite3_reset(stmt);
+            sqlite3_clear_bindings(stmt);
+        }
+
+        sqlite3_finalize(stmt);
+        stmt = nullptr;
+
+        sqlite3_exec(db_, "COMMIT;", nullptr, nullptr, nullptr);
     }
+    catch(...){
 
-    sqlite3_finalize(stmt);
+        if (stmt != nullptr){
+            sqlite3_finalize(stmt);
+        }
+        sqlite3_exec(db_, "ROLLBACK;", nullptr, nullptr, nullptr);
+        throw;
+    }
 }
