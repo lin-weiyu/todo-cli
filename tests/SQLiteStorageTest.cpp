@@ -127,3 +127,10 @@ TEST(SQLiteStorageTest, SaveEmptyListClearsDatabase){
 
     std::remove(path.c_str());
 }
+
+TEST(SQLiteStorageTest, ThrowsOnInvalidPath){
+    EXPECT_THROW(
+        SQLiteStorage("/nonexisent_dir_for_test/todo.db"),
+        std::runtime_error
+    );
+}
