@@ -1,4 +1,5 @@
 #pragma once
+#include "storage/IAttachmentStorage.h"
 #include <sqlite3.h>
 #include <string>
 /** 
@@ -9,7 +10,7 @@
 * 分别对应一条 INSERT/SELECT/DELETE，附件是任务下的多份独立数据
 * 不适合全量快照
 */
-class SQLiteAttachmentStorage{
+class SQLiteAttachmentStorage : public IAttachmentStorage{
 public:
     /**
     * @brief 构造并初始化附件存储
@@ -20,6 +21,15 @@ public:
 
     /// @brief 关闭数据库连接
     ~SQLiteAttachmentStorage();
+
+    /**
+    * @brief 给任务添加一条附件记录
+    * @param taskId 所属任务 id
+    * @param originalName 原始文件名
+    * @return 新附件的 id.
+    * @throws std::runtime_error 当打开数据库、开启外键约束或者创建表失败时
+     */
+    int addAttachment(int taskId, const std::string& originalName) override;
 private:
     std::string dbPath_;        ///< SQLite 数据库文件路径
     sqlite3* db_ = nullptr;     ///< SQLite 数据库连接。
