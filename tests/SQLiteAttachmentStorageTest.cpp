@@ -1,9 +1,11 @@
 #include "storage/SQLiteAttachmentStorage.h"
+#include "storage/SQLiteStorage.h"
 #include <gtest/gtest.h>
 #include <sqlite3.h>
+#include <stdexcept>
 #include <string>
 #include <cstdio>
-#include <fstream>
+#include <vector>
 TEST(SQLiteAttachmentStorageTest, ConstructorCreatesAttachmentsTable){
     const std::string path = "test_attachment_storage_tmp.db";
 
@@ -26,6 +28,40 @@ TEST(SQLiteAttachmentStorageTest, ConstructorCreatesAttachmentsTable){
 
     sqlite3_finalize(stmt);
     sqlite3_close(db);
+
+    std::remove(path.c_str());
+}
+
+TEST(SQLiteAttachmentStorageTest, AddAttachmentReturnsNewId){
+    const std::string path = "test_attachment_storage_tmp.db";
+
+    std::remove(path.c_str());
+    {
+        SQLiteStorage todos(path);       
+        todos.save({Todo(1, "write report")});
+    }
+
+    SQLiteAttachmentStorage attachments(path);
+    int id = attachments.addAttachment(1, "report.pdf");
+
+    EXPECT_GT(id, 0);
+
+    std::remove(path.c_str());
+}
+
+TEST(SQLiteAttachmentStorageTest, AddAttachmentThrowsOnUnknownTask){
+    const std::string path = "test_attachment_storage_tmp.db";
+
+    std::remove(path.c_str());
+
+    {
+        SQLiteStorage todos(path);
+        todos.save({Todo(1, "write report")});
+    }
+
+    SQLiteAttachmentStorage attachments(path);
+
+    EXPECT_THROW(attachments.addAttachment(999, "nope.pdf"), std::runtime_error);
 
     std::remove(path.c_str());
 }
