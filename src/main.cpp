@@ -1,9 +1,17 @@
 #include "cli/CommandHandler.h"
 
-int main(int argc, char* argv[]){
+#include <exception>
+#include <iostream>
 
-    CommandHandler handler;
-    handler.handle(argc, argv);    
+int main(int argc, char* argv[]){
+    try{
+        CommandHandler handler;
+        handler.handle(argc, argv);    
+        return 0;
+    }
+    catch (const std::exception& e){
+        std::cerr << "Error: " << e.what() << std::endl;
+        return 1;
+    }
     
-    return 0;
 }
