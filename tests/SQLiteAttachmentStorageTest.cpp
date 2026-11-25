@@ -1,5 +1,7 @@
 #include "storage/SQLiteAttachmentStorage.h"
 #include "storage/SQLiteStorage.h"
+#include "core/Todo.h"
+
 #include <gtest/gtest.h>
 #include <sqlite3.h>
 #include <stdexcept>

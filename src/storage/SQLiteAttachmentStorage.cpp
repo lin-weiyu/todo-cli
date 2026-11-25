@@ -49,5 +49,28 @@ SQLiteAttachmentStorage::~SQLiteAttachmentStorage(){
 }
 
 int SQLiteAttachmentStorage::addAttachment(int taskId, const std::string& originalName){
-    return 0;
+    sqlite3_stmt* stmt = nullptr;
+
+    const char* sql = "INSERT INTO attachments (task_id, original_name) VALUES (?, ?);";
+
+    int rc = sqlite3_prepare_v2(db_, sql, -1, &stmt, nullptr);
+    if (rc != SQLITE_OK){
+        throw std::runtime_error("Failed to prepare insert: " + std::string(sqlite3_errmsg(db_)));
+    }
+
+    sqlite3_bind_int(stmt, 1, taskId);
+    sqlite3_bind_text(stmt, 2, originalName.c_str(), -1, SQLITE_TRANSIENT);
+
+    rc = sqlite3_step(stmt);
+    if (rc != SQLITE_DONE){
+        std::string msg = sqlite3_errmsg(db_);
+        sqlite3_finalize(stmt);
+        throw std::runtime_error("Failed to add attachment: " + msg);
+    }
+
+    int newId = static_cast<int>(sqlite3_last_insert_rowid(db_));
+
+    sqlite3_finalize(stmt);
+
+    return newId;
 }
