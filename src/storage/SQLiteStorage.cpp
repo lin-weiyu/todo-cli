@@ -6,7 +6,15 @@
 #include <vector>
 
 SQLiteStorage::SQLiteStorage(const std::string& dbPath) : dbPath_(dbPath){
-    sqlite3_open(dbPath_.c_str(), &db_);
+    int rc = sqlite3_open(dbPath_.c_str(), &db_);
+    if (rc != SQLITE_OK){
+        std::string msg = db_ ? sqlite3_errmsg(db_) : "unknown open error";
+        if (db_){
+            sqlite3_close(db_);
+            db_ = nullptr;
+        }
+        throw std::runtime_error("Failed to open database : " + msg);
+    }
 
     const char* sql =   "CREATE TABLE IF NOT EXISTS todos ("
                         "id INTEGER PRIMARY KEY,"
@@ -14,7 +22,15 @@ SQLiteStorage::SQLiteStorage(const std::string& dbPath) : dbPath_(dbPath){
                         "done INTEGER NOT NULL DEFAULT 0 CHECK (done IN (0, 1))"
                         ");";
 
-    sqlite3_exec(db_, sql, nullptr, nullptr, nullptr);
+    char* errMsg = nullptr;
+    rc = sqlite3_exec(db_, sql, nullptr, nullptr, &errMsg);
+    if (rc != SQLITE_OK){
+        std::string msg = errMsg ? errMsg : sqlite3_errmsg(db_);
+        if (errMsg){
+            sqlite3_free(errMsg);
+        }
+        throw std::runtime_error("Failed to create table : " + msg);
+    }
 }
 
 SQLiteStorage::~SQLiteStorage(){
@@ -29,11 +45,14 @@ std::vector<Todo> SQLiteStorage::load(){
 
     const char* sql = "SELECT id, text, done FROM todos ORDER BY id;";
 
-    sqlite3_prepare_v2(db_, sql, -1, &stmt, nullptr);
+    int rc = sqlite3_prepare_v2(db_, sql, -1, &stmt, nullptr);
+    if (rc != SQLITE_OK){
+        throw std::runtime_error("Failed to prepare SELECT: " + std::string(sqlite3_errmsg(db_)));
+    }
 
     std::vector<Todo> todos;
 
-    while (sqlite3_step(stmt) == SQLITE_ROW){
+    while ((rc = sqlite3_step(stmt)) == SQLITE_ROW){
         int id = sqlite3_column_int(stmt, 0);
 
         const unsigned char* rawText = sqlite3_column_text(stmt, 1);
@@ -41,8 +60,14 @@ std::vector<Todo> SQLiteStorage::load(){
         int done = sqlite3_column_int(stmt, 2);
 
         Todo todo(id, rawText ? reinterpret_cast<const char*>(rawText) : "");
-        todo.done = done ? 1 : 0;
+        todo.done = (done != 0);
         todos.push_back(todo);
+    }
+
+    if (rc != SQLITE_DONE){
+        std::string msg = sqlite3_errmsg(db_);
+        sqlite3_finalize(stmt);
+        throw std::runtime_error("Failed to load todos: " + msg);
     }
 
     sqlite3_finalize(stmt);
