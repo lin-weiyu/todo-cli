@@ -47,3 +47,7 @@ SQLiteAttachmentStorage::~SQLiteAttachmentStorage(){
         db_ = nullptr;
     }
 }
+
+int SQLiteAttachmentStorage::addAttachment(int taskId, const std::string& originalName){
+    return 0;
+}
