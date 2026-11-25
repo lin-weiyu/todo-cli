@@ -69,6 +69,7 @@ add_executable(todo
     src/storage/Storage.cpp
     src/storage/JsonSerializer.cpp
     src/storage/SQLiteStorage.cpp
+    src/storage/SQLiteAttachmentStorage.cpp
     src/cli/CommandHandler.cpp
     src/utils/Logger.cpp
 )
@@ -86,11 +87,13 @@ add_executable(todo_tests
     tests/SQLiteStorageTest.cpp
     tests/TodoManagerTest.cpp
     tests/StorageTest.cpp
+    tests/SQLiteAttachmentStorageTest.cpp
     src/core/Todo.cpp
     src/core/TodoManager.cpp
     src/storage/Storage.cpp
     src/storage/JsonSerializer.cpp
     src/storage/SQLiteStorage.cpp
+    src/storage/SQLiteAttachmentStorage.cpp
     src/utils/Logger.cpp
 )
 
