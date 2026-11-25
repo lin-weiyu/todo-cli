@@ -4,7 +4,7 @@
 #include <string>
 #include <cstdio>
 #include <fstream>
-TEST(SQLiteAttachmentStorage, ConstructorCreatesAttachmentsTable){
+TEST(SQLiteAttachmentStorageTest, ConstructorCreatesAttachmentsTable){
     const std::string path = "test_attachment_storage_tmp.db";
 
     std::remove(path.c_str());
