@@ -34,6 +34,7 @@
 - [012] 2026-11-21 — JSON 存储升级到数据库时，应该选哪种数据库
 - [013] 2026-11-22 — 项目中怎么设计、引入和使用 SQLite 数据库
 - [014] 2026-11-22 — 明确导师式编码原则：模型引导，用户亲自实现
+- [015] 2026-11-25 — 决定跳过旧 JSON 导入，直接进入附件
 
 ---
 
@@ -264,4 +265,18 @@
 - **涉及概念**：导师式编程、TDD、Red/Green/Refactor、学习型项目、工程交接、可解释实现、Definition of Done。
 - **相关代码/文件**：[项目规则](../CLAUDE.md)、[数据库主题](topics/database.md)、[SQLiteStorage 测试](../tests/SQLiteStorageTest.cpp)、[存储接口](../include/storage/IStorage.h)。
 - **延伸**：继续 SQLite 实现时，保持“小步测试 → 用户实现 → 运行验证 → 回顾”的节奏；下一步是让 `SQLiteStorage` 构造函数创建 `todos` 表，再进入保存/读取测试。
+
+---
+
+## [015] 2026-11-25 — 决定跳过旧 JSON 导入，直接进入附件
+
+- **问题**：P0 收尾的“旧 JSON 导入（import-json）”要不要做？
+- **背景**：SQLite 桥接层已完成、CLI 已能切后端。用户检查后认为 `data/tasks.json` 是空数据、迁移价值低，提出跳过 import-json。
+- **回答**：
+  - 先核对事实：`data/tasks.json` 其实有 2 条真实数据（`5点休息` 已完成、`写完定积分选择题` 未完成），并非空。用户“觉得空”很可能是因为切到 `TODO_STORAGE=sqlite` 后 `list` 读到的是全新的空 SQLite 库，老数据还停在 JSON 里——这正是 import-json 要补的缺口。
+  - 但结论上尊重用户决定：跳过。就 2 条测试数据，迁移价值确实低；import 的价值在“迁移路径完整”而非“数据量”，属于可后补的收尾项，不是 P1 的硬依赖。
+  - 影响：2 条任务继续留在 `data/tasks.json`；切到 SQLite 后不会自动出现，后续需要可手敲 `add` 补齐或届时再补 import 命令。
+- **涉及概念**：YAGNI（不为低价值需求造功能）、范围控制、迁移路径 vs 数据量、核对数据前先确认“看的是哪个存储”。
+- **相关代码/文件**：[路线文档](topics/engineering-roadmap.md)（P0）、[data/tasks.json](../data/tasks.json)。
+- **延伸**：直接进入 P1 附件；附件会自然触发“全量快照 → Repository/DAO 按操作”重构。
 

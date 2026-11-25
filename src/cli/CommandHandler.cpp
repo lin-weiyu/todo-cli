@@ -3,6 +3,7 @@
 #include <iostream>
 #include <string>
 #include <cstdlib>
+#include <memory>
 
 #include "storage/IStorage.h"
 #include "storage/SQLiteStorage.h"
