@@ -13,9 +13,10 @@ graph TD
     TM --> IS[IStorage<br/>存储接口]
     IS --> S[Storage<br/>JSON 实现]
     IS --> FS[FakeStorage<br/>测试替身]
+    IS --> SQLS[SQLiteStorage<br/>SQLite数据库实现]
     S --> JS[JsonSerializer<br/>序列化工具]
-    TM --> TD[Todo<br/>数据模型]
     CH --> LG[Logger<br/>spdlog 封装]
+    TM --> TD[Todo<br/>数据模型]
 ```
 
 | 层 | 组件 | 职责 |
