@@ -1,5 +1,6 @@
 #pragma once
 #include "storage/IAttachmentStorage.h"
+#include "core/Attachment.h"
 #include <sqlite3.h>
 #include <string>
 /** 
@@ -30,6 +31,9 @@ public:
     * @throws std::runtime_error 当打开数据库、开启外键约束或者创建表失败时
      */
     int addAttachment(int taskId, const std::string& originalName) override;
+
+
+    std::vector<Attachment> listAttachments(int taskId) override;
 private:
     std::string dbPath_;        ///< SQLite 数据库文件路径
     sqlite3* db_ = nullptr;     ///< SQLite 数据库连接。

@@ -1,4 +1,5 @@
 #include "storage/SQLiteAttachmentStorage.h"
+#include "core/Attachment.h"
 #include <sqlite3.h>
 #include <stdexcept>
 #include <string>
@@ -73,4 +74,38 @@ int SQLiteAttachmentStorage::addAttachment(int taskId, const std::string& origin
     sqlite3_finalize(stmt);
 
     return newId;
+}
+
+std::vector<Attachment> SQLiteAttachmentStorage::listAttachments(int taskId){
+    sqlite3_stmt* stmt = nullptr;
+
+    const char* sql =   "SELECT id, task_Id, original_Name FROM attachments "
+                        "WHERE task_id = ? ORDER BY id;";
+    
+    int rc = sqlite3_prepare_v2(db_, sql, -1, &stmt, nullptr);
+    if (rc != SQLITE_OK){
+        throw std::runtime_error("Failed to prepare select: " + std::string(sqlite3_errmsg(db_)));
+    }
+
+    sqlite3_bind_int(stmt, 1, taskId);
+
+    std::vector<Attachment> attachments;
+
+    while ((rc = sqlite3_step(stmt)) == SQLITE_ROW){
+        int id = sqlite3_column_int(stmt, 0);
+        int rowTaskId = sqlite3_column_int(stmt, 1);
+        const unsigned char* rawName = sqlite3_column_text(stmt, 2);
+
+        attachments.push_back(Attachment(id, rowTaskId, rawName ? reinterpret_cast<const char*>(rawName) : ""));
+    }
+
+    if (rc != SQLITE_DONE){
+        std::string msg = sqlite3_errmsg(db_);
+        sqlite3_finalize(stmt);
+        throw std::runtime_error("Failed to list attachments: " + msg);
+    }
+
+    sqlite3_finalize(stmt);
+
+    return attachments;
 }

@@ -67,3 +67,28 @@ TEST(SQLiteAttachmentStorageTest, AddAttachmentThrowsOnUnknownTask){
 
     std::remove(path.c_str());
 }
+
+TEST(SQLiteAttachmentStorageTest, ListAttachmentsReturnsAttachments){
+    const std::string path = "test_attachment_storage_tmp.db";
+    
+    std::remove(path.c_str());
+
+    {
+        SQLiteStorage todos(path);
+        todos.save({Todo(1, "write report")});
+    }
+
+    SQLiteAttachmentStorage attachments(path);
+    attachments.addAttachment(1, "a.pdf");
+    attachments.addAttachment(1, "b.pdf");
+
+    auto list = attachments.listAttachments(1);
+
+    ASSERT_EQ(list.size(), 2);
+    EXPECT_EQ(list[0].originalName, "a.pdf");
+    EXPECT_EQ(list[1].originalName, "b.pdf");
+    EXPECT_EQ(list[0].taskId, 1);
+    EXPECT_EQ(list[1].taskId, 1);
+    
+    std::remove(path.c_str());
+}
