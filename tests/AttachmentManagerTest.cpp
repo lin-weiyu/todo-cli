@@ -75,3 +75,65 @@ TEST(AttachmentManagerTest, AttachRollsBackMetadataOnStoreFailure){
     std::remove(dbPath.c_str());
     fs::remove_all(baseDir);
 }
+
+
+
+TEST(AttachmentManagerTest, DetachRemovesMetadataAndFile){
+    const std::string dbPath = "test_attachment_manager_tmp.db";
+    const std::string baseDir = "test_attachment_manager_files_tmp";
+    const std::string source = "test_attachment_manager_source_tmp.txt";
+
+    std::remove(dbPath.c_str());
+    fs::remove_all(baseDir);
+    fs::remove(source);
+
+    {
+        std::ofstream out(source);
+        out << "content";
+
+    }
+
+    {
+        SQLiteStorage todos(dbPath);
+        todos.save({Todo(1, "write report")});
+    }
+
+    SQLiteAttachmentStorage metadata(dbPath);
+    AttachmentFileStore files(baseDir);
+    AttachmentManager manager(metadata, files);
+
+    int id = manager.attach(1, source);
+
+    bool removed = manager.detach(id);
+
+    EXPECT_TRUE(removed);
+    EXPECT_TRUE(metadata.listAttachments(1).empty());
+    EXPECT_FALSE(fs::exists(files.path(id)));
+
+    std::remove(dbPath.c_str());
+    fs::remove_all(baseDir);
+    fs::remove(source);
+
+}
+
+TEST(AttachmentManagerTest, DetachReturnsFalseForUnknownId){
+    const std::string dbPath = "test_attachment_manager_tmp.db";
+    const std::string baseDir = "test_attachment_manager_files_tmp";
+
+    std::remove(dbPath.c_str());
+    fs::remove_all(baseDir);
+
+    {
+        SQLiteStorage todos(dbPath);
+        todos.save({Todo(1, "write report")});
+    }
+
+    SQLiteAttachmentStorage metadata(dbPath);
+    AttachmentFileStore files(baseDir);
+    AttachmentManager manager(metadata, files);
+
+    EXPECT_FALSE(manager.detach(999));
+
+    std::remove(dbPath.c_str());
+    fs::remove_all(baseDir);
+}
