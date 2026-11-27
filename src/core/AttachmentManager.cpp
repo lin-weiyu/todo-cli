@@ -24,3 +24,9 @@ int AttachmentManager::attach(int taskId, const std::string& sourcePath){
 
     return id;
 }
+
+bool AttachmentManager::detach(int id){
+    bool removed = metadata_.removeAttachment(id);
+    files_.remove(id);
+    return removed;
+}

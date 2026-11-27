@@ -27,6 +27,13 @@ public:
      */
     int attach(int taskId, const std::string& sourcePath);
 
+    /**
+    * @brief 解除一个附件：删元数据 + 删物理文件
+    * @param id 附件 id
+    * @return true 元数据删除成功；false 未找到该 id
+     */
+    bool detach(int id);
+
 private:
     IAttachmentStorage& metadata_;  ///< 附件元数据存储
     AttachmentFileStore& files_;    ///< 附件文件存储
