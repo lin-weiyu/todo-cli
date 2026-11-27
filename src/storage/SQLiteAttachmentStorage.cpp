@@ -109,3 +109,7 @@ std::vector<Attachment> SQLiteAttachmentStorage::listAttachments(int taskId){
 
     return attachments;
 }
+
+bool SQLiteAttachmentStorage::removeAttachment(int id){
+    return false;
+}
