@@ -32,8 +32,20 @@ public:
      */
     int addAttachment(int taskId, const std::string& originalName) override;
 
-
+    /** 
+    * @brief 列出某任务的所有附属文件
+    * @param taskId 任务 id
+    * @return 该任务的附件列表；没有附件时返回空列表
+    */
     std::vector<Attachment> listAttachments(int taskId) override;
+    
+    /**
+    * @brief 删除指定附件记录
+    * @param id 附件 id
+    * @return true 删除成功；false 未找到该 id
+    * @throws std::runtime_error 当删除操作失败时
+    */
+    bool removeAttachment(int id) override;
 private:
     std::string dbPath_;        ///< SQLite 数据库文件路径
     sqlite3* db_ = nullptr;     ///< SQLite 数据库连接。
