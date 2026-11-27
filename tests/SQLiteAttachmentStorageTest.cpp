@@ -92,3 +92,42 @@ TEST(SQLiteAttachmentStorageTest, ListAttachmentsReturnsAttachments){
     
     std::remove(path.c_str());
 }
+
+TEST(SQLiteAttachmentStorageTest, RemoveAttachmentDeletesRow){
+    const std::string path = "test_attachment_storage_tmp.db";
+
+    std::remove(path.c_str());
+
+    {
+        SQLiteStorage todos(path);
+        todos.save({Todo(1, "write report")});
+    }
+
+    SQLiteAttachmentStorage attachments(path);
+    int id = attachments.addAttachment(1, "a.pdf");
+
+    bool removed = attachments.removeAttachment(id);
+
+    EXPECT_TRUE(removed);
+    EXPECT_TRUE(attachments.listAttachments(1).empty());
+
+    std::remove(path.c_str());
+}
+
+TEST(SQLiteAttachmentStorageTest, RemoveAttachmentReturnsFalseForUnknownId){
+    const std::string path = "test_attachment_storage_tmp.db";
+
+    std::remove(path.c_str());
+
+    {
+        SQLiteStorage todos(path);
+        todos.save({Todo(1, "write report")});
+
+    }
+
+    SQLiteAttachmentStorage attachments(path);
+
+    EXPECT_FALSE(attachments.removeAttachment(999));
+
+    std::remove(path.c_str());
+}
