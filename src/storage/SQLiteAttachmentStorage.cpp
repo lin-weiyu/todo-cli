@@ -111,5 +111,27 @@ std::vector<Attachment> SQLiteAttachmentStorage::listAttachments(int taskId){
 }
 
 bool SQLiteAttachmentStorage::removeAttachment(int id){
-    return false;
+    sqlite3_stmt* stmt = nullptr;
+
+    const char* sql = "DELETE FROM attachments WHERE id = ?;";
+
+    int rc = sqlite3_prepare_v2(db_, sql, -1, &stmt, nullptr);
+    if (rc != SQLITE_OK){
+        throw std::runtime_error("Failed to prepare delete: " + std::string(sqlite3_errmsg(db_)));
+    }
+
+    sqlite3_bind_int(stmt, 1, id);
+
+    rc = sqlite3_step(stmt);
+    if (rc != SQLITE_DONE){
+        std::string msg = sqlite3_errmsg(db_);
+        sqlite3_finalize(stmt);
+        throw std::runtime_error("Failed to remove attachment: " + msg);
+    }
+
+    int changed = sqlite3_changes(db_);
+
+    sqlite3_finalize(stmt);
+
+    return changed > 0;
 }
