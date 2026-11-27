@@ -79,7 +79,7 @@ int SQLiteAttachmentStorage::addAttachment(int taskId, const std::string& origin
 std::vector<Attachment> SQLiteAttachmentStorage::listAttachments(int taskId){
     sqlite3_stmt* stmt = nullptr;
 
-    const char* sql =   "SELECT id, task_id, original_Name FROM attachments "
+    const char* sql =   "SELECT id, task_id, original_name FROM attachments "
                         "WHERE task_id = ? ORDER BY id;";
     
     int rc = sqlite3_prepare_v2(db_, sql, -1, &stmt, nullptr);
