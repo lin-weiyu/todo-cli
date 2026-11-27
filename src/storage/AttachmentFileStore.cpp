@@ -17,5 +17,5 @@ std::string AttachmentFileStore::path(int id) const{
 }
 
 bool AttachmentFileStore::remove(int id){
-    return false;
+    return fs::remove(path(id));
 }
