@@ -25,4 +25,13 @@ public:
     * @return 该任务的附件列表；没有附件时返回空列表
     */
     virtual std::vector<Attachment> listAttachments(int taskId) = 0;
+
+    /**
+    * @brief 删除指定附件记录
+    * @param id 附件 id
+    * @return true 删除成功；false 未找到该 id
+    * @throws std::runtime_error 当删除操作失败时
+    */
+    virtual bool removeAttachment(int id) = 0;
+    
 };
