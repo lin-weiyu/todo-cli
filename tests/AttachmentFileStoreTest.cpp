@@ -65,3 +65,40 @@ TEST(AttachmentFileStoreTest, StoreThrowsOnMissingSource){
 
     fs::remove_all(baseDir);
 }
+
+TEST(AttachmentFileStoreTest, RemoveDeletesFile){
+    const std::string baseDir = "test_attachment_files_tmp";
+    const std::string source = "test_attachment_source_tmp.txt";
+
+    fs::remove_all(baseDir);
+    fs::remove(source);
+
+    {
+        std::ofstream out(source);
+        out << "x";
+    }
+
+    AttachmentFileStore store(baseDir);
+    store.store(1, source);
+
+    bool removed = store.remove(1);
+
+    EXPECT_TRUE(removed);
+    EXPECT_FALSE(fs::exists(baseDir + "/1"));
+
+    fs::remove_all(baseDir);
+    fs::remove(source);
+}
+
+
+TEST(AttachmentFileStoreTest, RemoveReturnsFalseForMissingFile){
+    const std::string baseDir = "test_attachment_files_tmp";
+
+    fs::remove_all(baseDir);
+
+    AttachmentFileStore store(baseDir);
+
+    EXPECT_FALSE(store.remove(999));
+
+    fs::remove_all(baseDir);
+}
